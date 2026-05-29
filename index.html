@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Peta Kampus ITS Surabaya</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1e6be6;--green:#16a34a;--orange:#ea580c;
+  --red:#dc2626;--purple:#7c3aed;--gray:#64748b;
+  --border:#e2e8f0;--bg:#f8fafc;--surface:#fff;
+  --text:#0f172a;--muted:#64748b;
+  --radius:10px;--shadow:0 2px 12px rgba(0,0,0,.10),0 0 0 1px rgba(0,0,0,.04);
+}
+html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hidden}
+
+/* HEADER */
+#header{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
+}
+#logo{
+  width:32px;height:32px;background:var(--blue);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:12px;flex-shrink:0;letter-spacing:-.5px;
+}
+#header-title h1{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
+#header-title p{font-size:10px;color:var(--muted)}
+
+/* SEARCH */
+#search-wrap{position:relative;margin-left:auto;flex:0 0 auto;width:230px}
+@media(max-width:560px){#search-wrap{width:148px}}
+#search-input{
+  width:100%;padding:7px 28px 7px 32px;
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  font-family:inherit;font-size:13px;
+  background:var(--bg);color:var(--text);outline:none;transition:.15s;
+}
+#search-input:focus{border-color:var(--blue);background:#fff}
+#search-input::placeholder{color:var(--muted)}
+#search-clear{
+  position:absolute;right:7px;top:50%;transform:translateY(-50%);
+  border:none;background:none;cursor:pointer;color:var(--muted);
+  font-size:13px;display:none;padding:2px;line-height:1;
+}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+#search-results{
+  position:absolute;top:calc(100% + 5px);left:0;right:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  display:none;z-index:9999;max-height:290px;overflow-y:auto;
+}
+.sr-item{padding:9px 11px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f1f5f9;transition:background .1s}
+.sr-item:last-child{border-bottom:none}
+.sr-item:hover{background:#f8fafc}
+.sr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.7)}
+.sr-name{font-size:12px;color:var(--text);font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-cat{font-size:10px;color:var(--muted);white-space:nowrap;background:#f1f5f9;padding:2px 5px;border-radius:4px}
+.sr-empty{padding:11px;font-size:13px;color:var(--muted);text-align:center}
+
+/* MAP */
+#map{position:fixed;top:54px;left:0;right:0;bottom:0;z-index:1}
+
+/* BASEMAP SWITCHER */
+#basemap-panel{
+  position:fixed;top:64px;right:10px;z-index:800;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  overflow:hidden;min-width:160px;
+}
+#bm-header{
+  padding:7px 11px;font-size:11px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;
+}
+#bm-body{padding:4px 0}
+.bm-item{
+  display:flex;align-items:center;gap:9px;padding:7px 11px;
+  cursor:pointer;transition:background .1s;font-size:12px;color:var(--text);
+}
+.bm-item:hover{background:#f8fafc}
+.bm-item.active{background:#eff6ff;color:var(--blue);font-weight:600}
+.bm-thumb{
+  width:30px;height:22px;border-radius:4px;border:1px solid var(--border);
+  flex-shrink:0;object-fit:cover;
+}
+.bm-label{flex:1;line-height:1.2}
+.bm-sublabel{font-size:10px;color:var(--muted);font-weight:400}
+.bm-check{font-size:13px;display:none}
+.bm-item.active .bm-check{display:block}
+
+/* GPS BUTTON */
+#gps-btn{
+  position:fixed;bottom:90px;right:10px;z-index:800;
+  width:40px;height:40px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:var(--shadow);font-size:18px;transition:.2s;
+}
+#gps-btn:hover{background:#f0f6ff;border-color:var(--blue)}
+#gps-btn.active{background:var(--blue);border-color:var(--blue)}
+
+/* LEGEND */
+#legend{
+  position:fixed;bottom:14px;left:10px;z-index:800;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:9px 11px;box-shadow:var(--shadow);
+}
+#leg-toggle{
+  font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none;
+}
+#leg-body{margin-top:7px}
+.leg-row{display:flex;align-items:center;gap:7px;margin-bottom:3px;font-size:11px;color:var(--text)}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* INFO PANEL */
+#info-panel{
+  position:fixed;bottom:14px;right:10px;z-index:800;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:11px 13px;
+  box-shadow:var(--shadow);max-width:215px;display:none;
+}
+#ip-close{float:right;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;margin-left:6px;border:none;background:none;padding:0}
+#ip-name{font-weight:700;font-size:13px;color:var(--text);margin-bottom:3px}
+#ip-coords{font-size:10px;color:var(--muted);font-family:monospace;margin-top:4px}
+
+/* GPS STATUS */
+#gps-status{
+  position:fixed;top:63px;left:50%;transform:translateX(-50%);z-index:900;
+  background:rgba(15,23,42,.85);color:#fff;padding:6px 14px;border-radius:20px;
+  font-size:12px;display:none;white-space:nowrap;backdrop-filter:blur(4px);
+}
+
+/* Leaflet */
+.leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:var(--radius)!important;overflow:hidden;box-shadow:var(--shadow)!important}
+.leaflet-control-zoom a{font-size:15px!important;color:var(--text)!important}
+.leaflet-popup-content-wrapper{border-radius:var(--radius)!important;box-shadow:var(--shadow)!important;padding:0!important;overflow:hidden}
+.leaflet-popup-content{margin:0!important;font-family:'Inter',sans-serif}
+.its-popup{padding:10px 12px;min-width:150px}
+.its-popup strong{font-size:13px;color:var(--text);display:block;margin-bottom:3px}
+
+@keyframes gpsPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.4}}
+.gps-ring{animation:gpsPulse 1.8s ease-in-out infinite}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="logo">ITS</div>
+  <div id="header-title">
+    <h1>Peta Kampus ITS Surabaya</h1>
+    <p>Institut Teknologi Sepuluh Nopember</p>
+  </div>
+  <div id="search-wrap">
+    <span class="si">🔍</span>
+    <input id="search-input" type="text" placeholder="Cari lokasi..." autocomplete="off"/>
+    <button id="search-clear" onclick="clearSearch()">✕</button>
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- BASEMAP SWITCHER -->
+<div id="basemap-panel">
+  <div id="bm-header" onclick="toggleBmPanel()">
+    🗺 Pilih Basemap <span id="bm-arrow">▾</span>
+  </div>
+  <div id="bm-body">
+    <div class="bm-item active" onclick="switchBasemap('carto-light',this)">
+      <img class="bm-thumb" src="https://a.basemaps.cartocdn.com/light_all/15/25962/16378.png" onerror="this.style.background='#f1f5f9';this.removeAttribute('src')"/>
+      <div class="bm-label">Carto Light<div class="bm-sublabel">Bersih & minimal</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('carto-dark',this)">
+      <img class="bm-thumb" src="https://a.basemaps.cartocdn.com/dark_all/15/25962/16378.png" onerror="this.style.background='#1e293b';this.removeAttribute('src')"/>
+      <div class="bm-label">Carto Dark<div class="bm-sublabel">Mode gelap</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('osm',this)">
+      <img class="bm-thumb" src="https://tile.openstreetmap.org/15/25962/16378.png" onerror="this.style.background='#e8f4e8';this.removeAttribute('src')"/>
+      <div class="bm-label">OpenStreetMap<div class="bm-sublabel">Standar OSM</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('osm-hot',this)">
+      <img class="bm-thumb" src="https://tile-a.openstreetmap.fr/hot/15/25962/16378.png" onerror="this.style.background='#fef9f0';this.removeAttribute('src')"/>
+      <div class="bm-label">OSM Humanitarian<div class="bm-sublabel">Warna hangat</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('topo',this)">
+      <img class="bm-thumb" src="https://tile.opentopomap.org/15/25962/16378.png" onerror="this.style.background='#eef7ee';this.removeAttribute('src')"/>
+      <div class="bm-label">OpenTopoMap<div class="bm-sublabel">Topografi</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('carto-voyager',this)">
+      <img class="bm-thumb" src="https://a.basemaps.cartocdn.com/rastertiles/voyager/15/25962/16378.png" onerror="this.style.background='#f5f0e8';this.removeAttribute('src')"/>
+      <div class="bm-label">Carto Voyager<div class="bm-sublabel">Detail & berwarna</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('esri-street',this)">
+      <img class="bm-thumb" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/15/16378/25962" onerror="this.style.background='#f5f5f0';this.removeAttribute('src')"/>
+      <div class="bm-label">ESRI Street<div class="bm-sublabel">Detail jalan</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+    <div class="bm-item" onclick="switchBasemap('esri-imagery',this)">
+      <img class="bm-thumb" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/16378/25962" onerror="this.style.background='#2d4a2d';this.removeAttribute('src')"/>
+      <div class="bm-label">Satelit (ESRI)<div class="bm-sublabel">Citra satelit</div></div>
+      <span class="bm-check">✓</span>
+    </div>
+  </div>
+</div>
+
+<!-- GPS -->
+<button id="gps-btn" onclick="toggleGPS()" title="Lokasi saya">
+  <span id="gps-icon">📍</span>
+</button>
+<div id="gps-status"></div>
+
+<!-- LEGEND -->
+<div id="legend">
+  <div id="leg-toggle" onclick="toggleLegend()">📋 Keterangan <span id="leg-arrow">▾</span></div>
+  <div id="leg-body">
+    <div class="leg-row"><div class="leg-dot" style="background:#1e6be6"></div>Akademik &amp; Departemen</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#16a34a"></div>Fasilitas Umum</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#dc2626"></div>Rektorat &amp; Gerbang</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#7c3aed"></div>Olahraga</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#ea580c"></div>Asrama &amp; Perumahan</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#64748b"></div>Parkir &amp; Lainnya</div>
+    <div class="leg-row">
+      <div style="width:9px;height:9px;border-radius:50%;background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.3);flex-shrink:0"></div>
+      Posisi GPS Anda
+    </div>
+    <div class="leg-row">
+      <div style="width:14px;height:0;border-top:2px dashed #f97316;flex-shrink:0;margin:1px 0"></div>
+      Radius 500 m
+    </div>
+  </div>
+</div>
+
+<!-- INFO PANEL -->
+<div id="info-panel">
+  <button id="ip-close" onclick="closeInfo()">✕</button>
+  <div id="ip-name"></div>
+  <div id="ip-cat"></div>
+  <div id="ip-coords"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ═══ KATEGORI ═══
+function getCategory(name){
+  const n=name.toLowerCase();
+  if(/gerbang|pos \d/.test(n))   return{cat:'Gerbang',color:'#dc2626',icon:'🚪'};
+  if(/rektorat/.test(n))          return{cat:'Rektorat',color:'#dc2626',icon:'🏛'};
+  if(/masjid/.test(n))            return{cat:'Ibadah',color:'#16a34a',icon:'🕌'};
+  if(/perpustakaan/.test(n))      return{cat:'Perpustakaan',color:'#16a34a',icon:'📚'};
+  if(/kantin|mart|kpri/.test(n))  return{cat:'Makan/Belanja',color:'#16a34a',icon:'🍽'};
+  if(/medical|kesehatan/.test(n)) return{cat:'Kesehatan',color:'#16a34a',icon:'🏥'};
+  if(/blok [a-z]$|asrama|dormitory|wisma/.test(n)) return{cat:'Asrama',color:'#ea580c',icon:'🏠'};
+  if(/perumahan/.test(n))         return{cat:'Perumahan',color:'#ea580c',icon:'🏘'};
+  if(/stadion|gor|lapangan|kolam|panjat|futsal|bulutangkis|basket|sirkuit/.test(n)) return{cat:'Olahraga',color:'#7c3aed',icon:'⚽'};
+  if(/parkir/.test(n))            return{cat:'Parkir',color:'#64748b',icon:'🅿'};
+  if(/bank|bni|perbankan/.test(n)) return{cat:'Perbankan',color:'#16a34a',icon:'🏦'};
+  if(/tps|kompos|limbah/.test(n)) return{cat:'Lingkungan',color:'#64748b',icon:'♻'};
+  if(/gedung|graha|tower|main spine|riset|center|stp|nasdec|maritime|reidi|ccws|scc|theater/.test(n)) return{cat:'Gedung',color:'#16a34a',icon:'🏢'};
+  return{cat:'Akademik',color:'#1e6be6',icon:'🎓'};
+}
+
+// ═══ DATA LOKASI (110 titik dari KML) ═══
+const LOCS=[
+  {name:"Graha ITS",lat:-7.276974740949804,lng:112.7915879920713},
+  {name:"Global Language Center",lat:-7.276983562058292,lng:112.792811619422},
+  {name:"Tower 3",lat:-7.27779011341039,lng:112.7921765640406},
+  {name:"Manajemen Bisnis",lat:-7.277915123859318,lng:112.7926446450642},
+  {name:"Statistika Bisnis",lat:-7.278271510504662,lng:112.7926426083688},
+  {name:"Teknik Instrumentasi",lat:-7.27830016503278,lng:112.7921233746225},
+  {name:"Teknik Mesin Industri",lat:-7.278758937273055,lng:112.7926185070135},
+  {name:"Teknik Kimia Industri",lat:-7.278759134474123,lng:112.7923828371237},
+  {name:"Teknik Elektro Otomasi",lat:-7.278763129801112,lng:112.7921820904474},
+  {name:"Parkir Motor Vokasi",lat:-7.27894248242908,lng:112.7921781021983},
+  {name:"Main Spine",lat:-7.279304473614967,lng:112.7925446822315},
+  {name:"Teknik Lingkungan",lat:-7.279747582598826,lng:112.7926296634754},
+  {name:"Teknik Sipil",lat:-7.280250052012113,lng:112.7931646723237},
+  {name:"Arsitektur",lat:-7.281085750995243,lng:112.7941843292891},
+  {name:"REKTORAT ITS",lat:-7.281453307948724,lng:112.7945888426988},
+  {name:"Perpustakaan ITS",lat:-7.281652097503969,lng:112.7954884076205},
+  {name:"Fakultas Kedokteran dan Kesehatan",lat:-7.280510095798792,lng:112.7952203034833},
+  {name:"Teknik Sistem Informasi",lat:-7.280687934294972,lng:112.7960732751479},
+  {name:"Teknik Perencanaan Wilayah dan Kota",lat:-7.279667845136431,lng:112.7940832747499},
+  {name:"Teknik Geomatika",lat:-7.280038277762258,lng:112.7947782712224},
+  {name:"Teknik Geofisika",lat:-7.279981105938933,lng:112.7955458979256},
+  {name:"Desain Interior",lat:-7.279555329310434,lng:112.7958397008523},
+  {name:"Desain Produk",lat:-7.278767663042802,lng:112.7965973758037},
+  {name:"Desain Komunikasi Visual",lat:-7.278434644344618,lng:112.7969470563458},
+  {name:"Teknik Informatika",lat:-7.279627121306686,lng:112.7975169869784},
+  {name:"Gedung Riset Center",lat:-7.281107797310416,lng:112.797299142528},
+  {name:"Teknik Perkapalan",lat:-7.281831597739759,lng:112.797272055252},
+  {name:"Teknik Kelautan",lat:-7.28215909577796,lng:112.796354597313},
+  {name:"Teknik Sistem Perkapalan",lat:-7.282123008185157,lng:112.7967515355626},
+  {name:"Teknik Transportasi Laut",lat:-7.282273901295431,lng:112.7984489283137},
+  {name:"Masjid Manarul Ilmi",lat:-7.282382909515469,lng:112.7930687285705},
+  {name:"REIDI ITS",lat:-7.282626224938442,lng:112.790759707936},
+  {name:"Teknik Kimia",lat:-7.282972730395653,lng:112.7966969772615},
+  {name:"Studi Pembangunan",lat:-7.282457831722672,lng:112.7953969306884},
+  {name:"Gedung KPA ITS",lat:-7.282433879977398,lng:112.7947420410961},
+  {name:"Theater A",lat:-7.283391503025636,lng:112.7950892476776},
+  {name:"Kimia",lat:-7.283875875459094,lng:112.7947541058257},
+  {name:"SCC",lat:-7.283424878549546,lng:112.7936001727509},
+  {name:"Parkir Motor KPA 1",lat:-7.283111978887274,lng:112.7939573093065},
+  {name:"Kantin Pusat ITS",lat:-7.283924005879613,lng:112.7940297989877},
+  {name:"Teknik Fisika",lat:-7.283765058383927,lng:112.7960603822553},
+  {name:"Theater B",lat:-7.284268194043348,lng:112.7950932020467},
+  {name:"Theater C",lat:-7.284583781906464,lng:112.7953229138378},
+  {name:"Fisika",lat:-7.284501382139265,lng:112.7950762806123},
+  {name:"Matematika",lat:-7.285103719590024,lng:112.794695321783},
+  {name:"Tower 1",lat:-7.285045257348544,lng:112.7941098455182},
+  {name:"Parkir Motor KPA 2",lat:-7.284621553648036,lng:112.7937843633362},
+  {name:"Statistika",lat:-7.285417047452929,lng:112.7941359376153},
+  {name:"Parkir Motor FSAD",lat:-7.285298453442345,lng:112.7936389929094},
+  {name:"Biologi",lat:-7.285990736605063,lng:112.794092202562},
+  {name:"Tower 2",lat:-7.285221773654642,lng:112.795349296566},
+  {name:"Teknik Mesin",lat:-7.284365816053441,lng:112.7960457489445},
+  {name:"Teknik Elektro",lat:-7.284914215362011,lng:112.7960594447574},
+  {name:"Parkir Motor T Elektro",lat:-7.285267905191978,lng:112.7966817537043},
+  {name:"Teknik Biomedik",lat:-7.284538047650577,lng:112.7966140893171},
+  {name:"Teknik Industri",lat:-7.283834297946141,lng:112.7974519324173},
+  {name:"Teknik Material dan Metalurgi",lat:-7.285089673729034,lng:112.7977394707832},
+  {name:"Parkir Motor FTI",lat:-7.284519854743996,lng:112.7971679094121},
+  {name:"Perumahan Dosen Blok U",lat:-7.283409985840117,lng:112.7997325972686},
+  {name:"CCWS",lat:-7.286777505480689,lng:112.7938683880945},
+  {name:"KPRI MART",lat:-7.286628702805277,lng:112.7939909458135},
+  {name:"PT. ITS Kemitraan",lat:-7.286954303230658,lng:112.795375149669},
+  {name:"Wisma Flamboyan",lat:-7.286268991725279,lng:112.7975001261401},
+  {name:"Wisma Bougenville",lat:-7.288060979898105,lng:112.793485619892},
+  {name:"GOR Pertamina ITS",lat:-7.283756451286794,lng:112.791957345531},
+  {name:"Stadion ITS",lat:-7.285374771564973,lng:112.7924083866228},
+  {name:"Kantor IKA ITS",lat:-7.284864900633123,lng:112.7931716542485},
+  {name:"Panjat Dinding ITS",lat:-7.28409581977382,lng:112.7930528589671},
+  {name:"Lapangan Basket",lat:-7.285209726533466,lng:112.7931492778841},
+  {name:"Lapangan Basket (2)",lat:-7.285789511690009,lng:112.7932261263487},
+  {name:"Gor Bulutangkis",lat:-7.286750755817856,lng:112.7930053829685},
+  {name:"Lapangan Futsal Outdor",lat:-7.287284661326811,lng:112.7927235024978},
+  {name:"Kompleks Asrama Mahasiswa ITS",lat:-7.288197466584735,lng:112.7916692808238},
+  {name:"Blok A",lat:-7.287281695132999,lng:112.7916957822158},
+  {name:"Blok D",lat:-7.287657194581747,lng:112.7924183961521},
+  {name:"Blok F",lat:-7.287730537589971,lng:112.7918898566936},
+  {name:"Blok C",lat:-7.287863176293064,lng:112.7914163800575},
+  {name:"Blok B",lat:-7.287614199339684,lng:112.7910350080208},
+  {name:"Blok J",lat:-7.287784661108391,lng:112.790284776207},
+  {name:"Blok M",lat:-7.288149156526068,lng:112.7902129117999},
+  {name:"Blok K",lat:-7.288467878526685,lng:112.790234242282},
+  {name:"Blok I",lat:-7.288183892350586,lng:112.7909058027963},
+  {name:"Blok G",lat:-7.289023065624572,lng:112.7908930832798},
+  {name:"Blok H",lat:-7.288627412025087,lng:112.7914593512055},
+  {name:"Blok E",lat:-7.288996754711724,lng:112.7916758636363},
+  {name:"Medical Center ITS",lat:-7.290342877545046,lng:112.7928387291153},
+  {name:"International Dormitory ITS",lat:-7.2902556270746,lng:112.7931986294713},
+  {name:"ITS Mart",lat:-7.29002536159715,lng:112.7963246157911},
+  {name:"Workshop Mobil Listrik Nasional",lat:-7.289286576071739,lng:112.7965417060894},
+  {name:"TK Sepuluh Nopember",lat:-7.288868491314642,lng:112.7962235570024},
+  {name:"Dharmawanita ITS",lat:-7.288515437059157,lng:112.7960739134461},
+  {name:"Perumahan Dosen ITS",lat:-7.28639078246941,lng:112.7986130577326},
+  {name:"Gerbang ITS Pos 1",lat:-7.279609404146377,lng:112.7907802544265},
+  {name:"Gerbang ITS Pos 2",lat:-7.290517227513766,lng:112.7920271646925},
+  {name:"Gerbang ITS Pos 3",lat:-7.275777320713854,lng:112.7950221411192},
+  {name:"Gedung Otomotive",lat:-7.276772474828655,lng:112.7967317878537},
+  {name:"Gedung Robotika",lat:-7.277336592620822,lng:112.7974588584085},
+  {name:"Science Techno Park (STP)",lat:-7.278351485261734,lng:112.7977433625405},
+  {name:"Gedung Creative Center",lat:-7.278016663510784,lng:112.7987026951813},
+  {name:"Sirkuit ITS",lat:-7.278142603426979,lng:112.8000351847271},
+  {name:"Gedung NASDEC",lat:-7.279054924001008,lng:112.7984829823248},
+  {name:"Gedung Maritime Center",lat:-7.279377383876944,lng:112.7988383876154},
+  {name:"Pengolahan Kompos ITS",lat:-7.290330014387939,lng:112.7899211990155},
+  {name:"Gedung Perbankan (Selatan)",lat:-7.290101830956138,lng:112.7914685993658},
+  {name:"Gedung Perbankan (Tengah)",lat:-7.284443556598946,lng:112.7930403350742},
+  {name:"Gedung Bank BNI ITS",lat:-7.283870608543023,lng:112.7936364461245},
+  {name:"TPS Limbah B3 ITS",lat:-7.276686221265257,lng:112.7972614878996},
+  {name:"Creative Desain Center",lat:-7.276747679329421,lng:112.798891653533},
+  {name:"Fakultas Kedokteran dan Kesehatan (Utara)",lat:-7.275623215646355,lng:112.7958187061861},
+  {name:"Gedung ILBI ITS",lat:-7.276002130395498,lng:112.7958461269055},
+].map(l=>({...l,...getCategory(l.name)}));
+
+// ═══ MAP INIT ═══
+const map=L.map('map',{zoomControl:true,tap:true}).setView([-7.2825,112.7950],15);
+
+// Definisi semua basemap
+const BASEMAPS={
+  'carto-light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains:'abcd',maxZoom:20
+  }),
+  'carto-dark': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains:'abcd',maxZoom:20
+  }),
+  'osm': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom:19
+  }),
+  'osm-hot': L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://www.hotosm.org/">HOT</a>',
+    subdomains:'abc',maxZoom:19
+  }),
+  'topo': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
+    attribution:'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
+    subdomains:'abc',maxZoom:17
+  }),
+  'carto-voyager': L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains:'abcd',maxZoom:20
+  }),
+  'esri-street': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{
+    attribution:'Tiles &copy; <a href="https://www.esri.com/">Esri</a>',
+    maxZoom:19
+  }),
+  'esri-imagery': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+    attribution:'Tiles &copy; <a href="https://www.esri.com/">Esri</a>',
+    maxZoom:19
+  }),
+};
+
+let currentBm='carto-light';
+BASEMAPS['carto-light'].addTo(map);
+
+// Warna jalan berdasarkan basemap
+const ROAD_COLORS={
+  'carto-light':{p:'#94a3b8',s:'#b0bec5',t:'#cfd8dc',r:'#dde3ec',sv:'#e8edf4',f:'#bfdbfe'},
+  'carto-dark': {p:'#475569',s:'#374151',t:'#2d3748',r:'#243040',sv:'#1e2a38',f:'#1e3a5f'},
+  'osm':        {p:'#f59e0b',s:'#fbbf24',t:'#d1d5db',r:'#e5e7eb',sv:'#f3f4f6',f:'#93c5fd'},
+  'osm-hot':    {p:'#f97316',s:'#fb923c',t:'#d1d5db',r:'#e5e7eb',sv:'#f3f4f6',f:'#93c5fd'},
+  'topo':       {p:'#78716c',s:'#a8a29e',t:'#c4b5a0',r:'#d6cfc6',sv:'#e7e0d8',f:'#86efac'},
+  'carto-voyager':{p:'#94a3b8',s:'#b0bec5',t:'#cfd8dc',r:'#dde3ec',sv:'#e8edf4',f:'#bfdbfe'},
+  'esri-street':{p:'#9ca3af',s:'#b5bfca',t:'#cbd5de',r:'#dce3ea',sv:'#e8ecf2',f:'#bfdbfe'},
+  'esri-imagery':{p:'rgba(255,255,255,.6)',s:'rgba(255,255,255,.4)',t:'rgba(255,255,255,.3)',r:'rgba(255,255,255,.25)',sv:'rgba(255,255,255,.2)',f:'rgba(100,180,255,.4)'},
+};
+
+// Layer group untuk jalan agar bisa diupdate warna
+const roadsLayer=L.layerGroup().addTo(map);
+let roadsData=null;
+
+function renderRoads(data,bmKey){
+  roadsLayer.clearLayers();
+  const c=ROAD_COLORS[bmKey]||ROAD_COLORS['carto-light'];
+  const styles={
+    primary:    {color:c.p,weight:3.5,opacity:.9},
+    secondary:  {color:c.s,weight:2.8,opacity:.88},
+    tertiary:   {color:c.t,weight:2,opacity:.8},
+    residential:{color:c.r,weight:1.8,opacity:.75},
+    service:    {color:c.sv,weight:1.5,opacity:.7},
+    footway:    {color:c.f,weight:1,opacity:.5,dashArray:'4 4'},
+    path:       {color:c.f,weight:1,opacity:.4,dashArray:'3 4'},
+    cycleway:   {color:c.f,weight:1,opacity:.45,dashArray:'5 3'},
+  };
+  data.ways.forEach(w=>{
+    const pts=w.nodes.map(id=>data.nodes[id]).filter(Boolean);
+    if(pts.length<2) return;
+    const s=styles[w.hw]||{color:c.r,weight:1.5,opacity:.65};
+    L.polyline(pts,s).addTo(roadsLayer);
+  });
+}
+
+(async function loadRoads(){
+  const bbox='-7.2960,112.7885,-7.2740,112.8025';
+  const q=`[out:json][timeout:30];(way["highway"](${bbox}););out body;>;out skel qt;`;
+  try{
+    const res=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
+    const d=await res.json();
+    const nodes={};
+    d.elements.filter(e=>e.type==='node').forEach(n=>{nodes[n.id]=[n.lat,n.lon];});
+    const ways=d.elements.filter(e=>e.type==='way').map(w=>({
+      nodes:w.nodes, hw:(w.tags&&w.tags.highway)||''
+    })).filter(w=>w.hw);
+    roadsData={nodes,ways};
+    renderRoads(roadsData,currentBm);
+  }catch(e){console.warn('Overpass error:',e);}
+})();
+
+// SWITCH BASEMAP
+window.switchBasemap=function(key,el){
+  if(key===currentBm) return;
+  map.removeLayer(BASEMAPS[currentBm]);
+  BASEMAPS[key].addTo(map);
+  BASEMAPS[key].bringToBack();
+  currentBm=key;
+  // Update jalan warna
+  if(roadsData) renderRoads(roadsData,key);
+  // Update marker warna outline saat dark
+  updateMarkerStyle(key);
+  // Update UI
+  document.querySelectorAll('.bm-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+};
+
+function updateMarkerStyle(key){
+  const dark=(key==='carto-dark'||key==='esri-imagery');
+  const satellite=(key==='esri-imagery');
+  LOCS.forEach((loc,i)=>{
+    const border=dark?'rgba(255,255,255,.85)':'#fff';
+    const shadow=satellite?'0 1px 5px rgba(0,0,0,.8)':'0 1px 4px rgba(0,0,0,.28)';
+    markers[i].setIcon(L.divIcon({
+      className:'',
+      html:`<div style="width:11px;height:11px;border-radius:50%;background:${loc.color};border:2px solid ${border};box-shadow:${shadow};"></div>`,
+      iconSize:[11,11],iconAnchor:[5.5,5.5],popupAnchor:[0,-8]
+    }));
+  });
+}
+
+// BASEMAP PANEL TOGGLE
+let bmOpen=true;
+window.toggleBmPanel=function(){
+  bmOpen=!bmOpen;
+  document.getElementById('bm-body').style.display=bmOpen?'block':'none';
+  document.getElementById('bm-arrow').textContent=bmOpen?'▾':'▸';
+};
+
+// ═══ MARKERS ═══
+function makeIcon(color){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:11px;height:11px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.28);"></div>`,
+    iconSize:[11,11],iconAnchor:[5.5,5.5],popupAnchor:[0,-8]
+  });
+}
+const markers=[];
+LOCS.forEach((loc,i)=>{
+  const m=L.marker([loc.lat,loc.lng],{icon:makeIcon(loc.color)}).addTo(map);
+  m.bindPopup(`<div class="its-popup"><strong>${loc.name}</strong><span style="display:inline-block;margin-top:2px;padding:1px 7px;border-radius:4px;background:${loc.color}1a;color:${loc.color};font-weight:600;font-size:10px;">${loc.icon} ${loc.cat}</span></div>`,{maxWidth:210,closeButton:false});
+  m.on('click',()=>showInfo(loc));
+  markers.push(m);
+});
+
+// ═══ INFO PANEL ═══
+function showInfo(loc){
+  document.getElementById('ip-name').textContent=loc.name;
+  const c=document.getElementById('ip-cat');
+  c.textContent=loc.icon+' '+loc.cat;
+  c.style.cssText=`background:${loc.color}15;color:${loc.color};font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:4px`;
+  document.getElementById('ip-coords').textContent=`${loc.lat.toFixed(6)}, ${loc.lng.toFixed(6)}`;
+  document.getElementById('info-panel').style.display='block';
+}
+window.closeInfo=()=>{document.getElementById('info-panel').style.display='none';};
+map.on('click',()=>closeInfo());
+
+// ═══ SEARCH ═══
+const si=document.getElementById('search-input');
+const sr=document.getElementById('search-results');
+const sc=document.getElementById('search-clear');
+si.addEventListener('input',function(){
+  const q=this.value.trim().toLowerCase();
+  sc.style.display=q?'block':'none';
+  if(!q){sr.style.display='none';return;}
+  const hits=LOCS.filter(l=>l.name.toLowerCase().includes(q)||l.cat.toLowerCase().includes(q)).slice(0,10);
+  sr.innerHTML=hits.length
+    ?hits.map(l=>{const i=LOCS.indexOf(l);return`<div class="sr-item" onclick="goTo(${i})"><div class="sr-dot" style="background:${l.color}"></div><span class="sr-name">${l.name}</span><span class="sr-cat">${l.cat}</span></div>`;}).join('')
+    :'<div class="sr-empty">Tidak ditemukan</div>';
+  sr.style.display='block';
+});
+window.goTo=function(i){
+  const loc=LOCS[i];
+  map.setView([loc.lat,loc.lng],18,{animate:true});
+  setTimeout(()=>markers[i].openPopup(),400);
+  showInfo(loc);sr.style.display='none';
+  si.value=loc.name;sc.style.display='block';
+};
+window.clearSearch=function(){si.value='';sc.style.display='none';sr.style.display='none';si.focus();};
+document.addEventListener('click',e=>{if(!e.target.closest('#search-wrap'))sr.style.display='none';});
+
+// ═══ GPS ═══
+let gpsActive=false,gpsMarker=null,gpsCircle=null,gpsRadius=null,watchId=null;
+const gpsBtn=document.getElementById('gps-btn');
+const gpsSt=document.getElementById('gps-status');
+function showStatus(msg,t=3000){gpsSt.textContent=msg;gpsSt.style.display='block';if(t)setTimeout(()=>gpsSt.style.display='none',t);}
+window.toggleGPS=function(){gpsActive?stopGPS():startGPS();};
+function startGPS(){
+  if(!navigator.geolocation){showStatus('⚠️ GPS tidak didukung',4000);return;}
+  showStatus('📡 Mencari sinyal GPS...',0);
+  gpsBtn.classList.add('active');gpsActive=true;
+  watchId=navigator.geolocation.watchPosition(pos=>{
+    const{latitude:lat,longitude:lng,accuracy:acc}=pos.coords;
+    gpsSt.style.display='none';
+    const gIcon=L.divIcon({className:'',
+      html:`<div style="position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">
+        <div class="gps-ring" style="position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(59,130,246,.18);border:2px solid rgba(59,130,246,.45);"></div>
+        <div style="width:10px;height:10px;border-radius:50%;background:#3b82f6;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(59,130,246,.7);z-index:1;"></div>
+      </div>`,
+      iconSize:[22,22],iconAnchor:[11,11]
+    });
+    if(gpsMarker){
+      gpsMarker.setLatLng([lat,lng]);
+      gpsCircle.setLatLng([lat,lng]).setRadius(acc);
+      gpsRadius.setLatLng([lat,lng]);
+    }else{
+      gpsMarker=L.marker([lat,lng],{icon:gIcon,zIndexOffset:2000}).addTo(map)
+        .bindPopup(`<div class="its-popup"><strong>📍 Posisi Anda</strong><span>Akurasi ±${Math.round(acc)} m</span></div>`);
+      gpsCircle=L.circle([lat,lng],{radius:acc,color:'#3b82f6',fillColor:'#3b82f6',fillOpacity:.08,weight:1.5,opacity:.4}).addTo(map);
+      gpsRadius=L.circle([lat,lng],{radius:500,color:'#f97316',fillColor:'#f97316',fillOpacity:.05,weight:2,opacity:.75,dashArray:'8 5'}).addTo(map);
+      gpsRadius.bindPopup('<div class="its-popup"><strong>⭕ Radius 500 m</strong><span>dari posisi Anda</span></div>');
+      map.setView([lat,lng],17,{animate:true});
+    }
+  },err=>{
+    const m={1:'⛔ Izin GPS ditolak.',2:'📡 Sinyal tidak tersedia.',3:'⏱ GPS timeout.'}[err.code]||'❌ GPS error.';
+    showStatus(m,5000);stopGPS();
+  },{enableHighAccuracy:true,maximumAge:5000,timeout:15000});
+}
+function stopGPS(){
+  if(watchId)navigator.geolocation.clearWatch(watchId);
+  [gpsMarker,gpsCircle,gpsRadius].forEach(l=>{if(l)map.removeLayer(l);});
+  gpsMarker=gpsCircle=gpsRadius=null;
+  gpsBtn.classList.remove('active');gpsActive=false;gpsSt.style.display='none';
+}
+
+// ═══ LEGEND TOGGLE ═══
+let legOpen=true;
+window.toggleLegend=function(){
+  legOpen=!legOpen;
+  document.getElementById('leg-body').style.display=legOpen?'block':'none';
+  document.getElementById('leg-arrow').textContent=legOpen?'▾':'▸';
+};
+// Mobile: panel basemap & legend tutup by default
+if(window.innerWidth<600){
+  bmOpen=false;
+  document.getElementById('bm-body').style.display='none';
+  document.getElementById('bm-arrow').textContent='▸';
+  legOpen=false;
+  document.getElementById('leg-body').style.display='none';
+  document.getElementById('leg-arrow').textContent='▸';
+}
+</script>
+</body>
+</html>
