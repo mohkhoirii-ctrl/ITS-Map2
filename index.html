@@ -13,10 +13,9 @@
   --red:#dc2626;--purple:#7c3aed;--gray:#64748b;
   --border:#e2e8f0;--bg:#f8fafc;--surface:#fff;
   --text:#0f172a;--muted:#64748b;
-  --radius:10px;--shadow:0 2px 12px rgba(0,0,0,.10),0 0 0 1px rgba(0,0,0,.04);
+  --radius:10px;--shadow:0 2px 14px rgba(0,0,0,.11),0 0 0 1px rgba(0,0,0,.04);
 }
-html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hidden}
-
+html,body{height:100%;font-family:'Inter',sans-serif;overflow:hidden}
 /* HEADER */
 #header{
   position:fixed;top:0;left:0;right:0;z-index:1000;
@@ -24,133 +23,170 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hi
   display:flex;align-items:center;gap:10px;padding:9px 12px;
   box-shadow:0 1px 6px rgba(0,0,0,.07);
 }
-#logo{
-  width:32px;height:32px;background:var(--blue);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:700;font-size:12px;flex-shrink:0;letter-spacing:-.5px;
-}
+#logo{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0;letter-spacing:-.5px}
 #header-title h1{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
 #header-title p{font-size:10px;color:var(--muted)}
-
 /* SEARCH */
-#search-wrap{position:relative;margin-left:auto;flex:0 0 auto;width:230px}
-@media(max-width:560px){#search-wrap{width:148px}}
-#search-input{
-  width:100%;padding:7px 28px 7px 32px;
-  border:1.5px solid var(--border);border-radius:var(--radius);
-  font-family:inherit;font-size:13px;
-  background:var(--bg);color:var(--text);outline:none;transition:.15s;
-}
+#search-wrap{position:relative;margin-left:auto;flex:0 0 auto;width:220px}
+@media(max-width:560px){#search-wrap{width:140px}}
+#search-input{width:100%;padding:7px 28px 7px 30px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:12px;background:var(--bg);color:var(--text);outline:none;transition:.15s}
 #search-input:focus{border-color:var(--blue);background:#fff}
 #search-input::placeholder{color:var(--muted)}
-#search-clear{
-  position:absolute;right:7px;top:50%;transform:translateY(-50%);
-  border:none;background:none;cursor:pointer;color:var(--muted);
-  font-size:13px;display:none;padding:2px;line-height:1;
-}
+#search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;color:var(--muted);font-size:13px;display:none;padding:2px;line-height:1}
 .si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
-#search-results{
-  position:absolute;top:calc(100% + 5px);left:0;right:0;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  display:none;z-index:9999;max-height:290px;overflow-y:auto;
-}
-.sr-item{padding:9px 11px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f1f5f9;transition:background .1s}
+#search-results{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);display:none;z-index:9999;max-height:260px;overflow-y:auto}
+.sr-item{padding:8px 11px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f1f5f9;transition:background .1s}
 .sr-item:last-child{border-bottom:none}
 .sr-item:hover{background:#f8fafc}
 .sr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,.7)}
 .sr-name{font-size:12px;color:var(--text);font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sr-cat{font-size:10px;color:var(--muted);white-space:nowrap;background:#f1f5f9;padding:2px 5px;border-radius:4px}
-.sr-empty{padding:11px;font-size:13px;color:var(--muted);text-align:center}
-
+.sr-empty{padding:11px;font-size:12px;color:var(--muted);text-align:center}
 /* MAP */
 #map{position:fixed;top:54px;left:0;right:0;bottom:0;z-index:1}
 
-/* BASEMAP SWITCHER */
+/* ═══ ROUTING PANEL ═══ */
+#route-panel{
+  position:fixed;top:64px;left:10px;z-index:800;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);box-shadow:var(--shadow);
+  width:270px;overflow:hidden;
+}
+@media(max-width:560px){#route-panel{width:calc(100vw - 20px)}}
+#rp-header{
+  padding:9px 12px;background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;
+}
+#rp-header span{font-size:12px;font-weight:600;letter-spacing:.01em}
+#rp-arrow{font-size:12px;transition:transform .2s}
+#rp-body{padding:10px 12px}
+.rp-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.rp-input-wrap{position:relative;margin-bottom:8px}
+.rp-input{
+  width:100%;padding:7px 28px 7px 30px;
+  border:1.5px solid var(--border);border-radius:8px;
+  font-family:inherit;font-size:12px;color:var(--text);
+  background:var(--bg);outline:none;transition:.15s;
+}
+.rp-input:focus{border-color:var(--blue);background:#fff}
+.rp-input::placeholder{color:#b0bec5}
+.rp-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+.rp-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;color:var(--muted);font-size:12px;padding:0;display:none}
+.rp-dropdown{
+  position:absolute;top:calc(100% + 3px);left:0;right:0;z-index:9999;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  box-shadow:var(--shadow);max-height:200px;overflow-y:auto;display:none;
+}
+.rp-dd-item{padding:7px 10px;cursor:pointer;display:flex;align-items:center;gap:7px;border-bottom:1px solid #f1f5f9;font-size:12px;transition:background .1s}
+.rp-dd-item:last-child{border-bottom:none}
+.rp-dd-item:hover{background:#f8fafc}
+.rp-dd-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* Swap button */
+#rp-swap{
+  display:flex;justify-content:center;margin:-2px 0 6px;
+}
+#rp-swap button{
+  border:1px solid var(--border);background:var(--bg);border-radius:6px;
+  padding:4px 12px;font-size:11px;color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;gap:5px;font-family:inherit;transition:.15s;
+}
+#rp-swap button:hover{background:#f0f6ff;border-color:var(--blue);color:var(--blue)}
+/* Mode tabs */
+#rp-modes{display:flex;gap:5px;margin-bottom:10px}
+.mode-btn{
+  flex:1;padding:6px 4px;border:1.5px solid var(--border);border-radius:7px;
+  background:var(--bg);font-family:inherit;font-size:11px;font-weight:500;
+  color:var(--muted);cursor:pointer;transition:.15s;text-align:center;
+}
+.mode-btn:hover{border-color:var(--blue);color:var(--blue)}
+.mode-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+/* GPS as origin */
+#rp-gps-origin{
+  font-size:11px;color:var(--blue);cursor:pointer;text-decoration:underline;
+  margin-bottom:8px;display:inline-flex;align-items:center;gap:4px;
+}
+/* Route button */
+#rp-go{
+  width:100%;padding:8px;background:var(--blue);color:#fff;border:none;
+  border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;transition:.15s;margin-bottom:6px;
+}
+#rp-go:hover{background:var(--blue-dark,#1558c8)}
+#rp-go:disabled{background:#94a3b8;cursor:not-allowed}
+#rp-clear-route{
+  width:100%;padding:6px;background:none;color:#dc2626;border:1.5px solid #fecaca;
+  border-radius:8px;font-family:inherit;font-size:12px;font-weight:500;
+  cursor:pointer;transition:.15s;display:none;
+}
+#rp-clear-route:hover{background:#fef2f2}
+/* Route result */
+#rp-result{
+  margin-top:8px;padding:8px 10px;background:#f0f6ff;
+  border-radius:8px;border:1px solid #bfdbfe;display:none;
+}
+#rp-result .rr-title{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:4px}
+#rp-result .rr-row{font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px;margin-bottom:2px}
+#rp-result .rr-muted{font-size:11px;color:var(--muted);margin-top:4px}
+#rp-spinner{text-align:center;padding:8px;font-size:12px;color:var(--muted);display:none}
+#rp-error{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:7px 10px;font-size:12px;color:#dc2626;display:none;margin-top:6px}
+
+/* BASEMAP */
 #basemap-panel{
   position:fixed;top:64px;right:10px;z-index:800;
   background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  overflow:hidden;min-width:160px;
+  border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;min-width:155px;
 }
-#bm-header{
-  padding:7px 11px;font-size:11px;font-weight:600;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.06em;
-  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;
-}
+#bm-header{padding:7px 11px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
 #bm-body{padding:4px 0}
-.bm-item{
-  display:flex;align-items:center;gap:9px;padding:7px 11px;
-  cursor:pointer;transition:background .1s;font-size:12px;color:var(--text);
-}
+.bm-item{display:flex;align-items:center;gap:8px;padding:6px 11px;cursor:pointer;transition:background .1s;font-size:12px;color:var(--text)}
 .bm-item:hover{background:#f8fafc}
 .bm-item.active{background:#eff6ff;color:var(--blue);font-weight:600}
-.bm-thumb{
-  width:30px;height:22px;border-radius:4px;border:1px solid var(--border);
-  flex-shrink:0;object-fit:cover;
-}
+.bm-thumb{width:28px;height:20px;border-radius:3px;border:1px solid var(--border);flex-shrink:0;object-fit:cover}
 .bm-label{flex:1;line-height:1.2}
 .bm-sublabel{font-size:10px;color:var(--muted);font-weight:400}
-.bm-check{font-size:13px;display:none}
+.bm-check{font-size:12px;display:none}
 .bm-item.active .bm-check{display:block}
 
-/* GPS BUTTON */
-#gps-btn{
-  position:fixed;bottom:90px;right:10px;z-index:800;
-  width:40px;height:40px;background:var(--surface);border:1.5px solid var(--border);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;box-shadow:var(--shadow);font-size:18px;transition:.2s;
-}
+/* GPS */
+#gps-btn{position:fixed;bottom:90px;right:10px;z-index:800;width:40px;height:40px;background:var(--surface);border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);font-size:18px;transition:.2s}
 #gps-btn:hover{background:#f0f6ff;border-color:var(--blue)}
 #gps-btn.active{background:var(--blue);border-color:var(--blue)}
 
 /* LEGEND */
-#legend{
-  position:fixed;bottom:14px;left:10px;z-index:800;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:9px 11px;box-shadow:var(--shadow);
-}
-#leg-toggle{
-  font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;
-  letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none;
-}
+#legend{position:fixed;bottom:14px;left:10px;z-index:800;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px;box-shadow:var(--shadow)}
+#leg-toggle{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none}
 #leg-body{margin-top:7px}
 .leg-row{display:flex;align-items:center;gap:7px;margin-bottom:3px;font-size:11px;color:var(--text)}
 .leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 
-/* INFO PANEL */
-#info-panel{
-  position:fixed;bottom:14px;right:10px;z-index:800;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:11px 13px;
-  box-shadow:var(--shadow);max-width:215px;display:none;
-}
+/* INFO */
+#info-panel{position:fixed;bottom:14px;right:10px;z-index:800;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;box-shadow:var(--shadow);max-width:210px;display:none}
 #ip-close{float:right;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;margin-left:6px;border:none;background:none;padding:0}
 #ip-name{font-weight:700;font-size:13px;color:var(--text);margin-bottom:3px}
 #ip-coords{font-size:10px;color:var(--muted);font-family:monospace;margin-top:4px}
+.ip-use-btn{margin-top:7px;display:flex;gap:5px}
+.ip-use-btn button{flex:1;padding:5px;font-size:10px;font-weight:600;border-radius:6px;cursor:pointer;font-family:inherit;border:1.5px solid;transition:.15s}
+.ip-as-from{background:#eff6ff;color:var(--blue);border-color:#bfdbfe}
+.ip-as-from:hover{background:#dbeafe}
+.ip-as-to{background:#f0fdf4;color:var(--green);border-color:#bbf7d0}
+.ip-as-to:hover{background:#dcfce7}
 
-/* GPS STATUS */
-#gps-status{
-  position:fixed;top:63px;left:50%;transform:translateX(-50%);z-index:900;
-  background:rgba(15,23,42,.85);color:#fff;padding:6px 14px;border-radius:20px;
-  font-size:12px;display:none;white-space:nowrap;backdrop-filter:blur(4px);
-}
+/* GPS status */
+#gps-status{position:fixed;top:63px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(15,23,42,.85);color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;display:none;white-space:nowrap;backdrop-filter:blur(4px)}
 
 /* Leaflet */
 .leaflet-control-zoom{border:1px solid var(--border)!important;border-radius:var(--radius)!important;overflow:hidden;box-shadow:var(--shadow)!important}
 .leaflet-control-zoom a{font-size:15px!important;color:var(--text)!important}
 .leaflet-popup-content-wrapper{border-radius:var(--radius)!important;box-shadow:var(--shadow)!important;padding:0!important;overflow:hidden}
 .leaflet-popup-content{margin:0!important;font-family:'Inter',sans-serif}
-.its-popup{padding:10px 12px;min-width:150px}
+.its-popup{padding:10px 12px;min-width:140px}
 .its-popup strong{font-size:13px;color:var(--text);display:block;margin-bottom:3px}
-
 @keyframes gpsPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.4}}
 .gps-ring{animation:gpsPulse 1.8s ease-in-out infinite}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div id="header">
   <div id="logo">ITS</div>
   <div id="header-title">
@@ -165,18 +201,69 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hi
   </div>
 </div>
 
-<!-- MAP -->
 <div id="map"></div>
 
-<!-- BASEMAP SWITCHER -->
-<div id="basemap-panel">
-  <div id="bm-header" onclick="toggleBmPanel()">
-    🗺 Pilih Basemap <span id="bm-arrow">▾</span>
+<!-- ROUTING PANEL -->
+<div id="route-panel">
+  <div id="rp-header" onclick="toggleRpPanel()">
+    <span>🗺 Rute Perjalanan</span>
+    <span id="rp-arrow">▾</span>
   </div>
+  <div id="rp-body">
+    <!-- Mode transport -->
+    <div id="rp-modes">
+      <button class="mode-btn active" onclick="setMode('foot',this)" title="Jalan kaki">🚶 Kaki</button>
+      <button class="mode-btn" onclick="setMode('bike',this)" title="Sepeda">🚲 Sepeda</button>
+      <button class="mode-btn" onclick="setMode('car',this)" title="Kendaraan">🚗 Motor/Mobil</button>
+    </div>
+
+    <!-- Asal -->
+    <div class="rp-label">Titik Asal</div>
+    <div class="rp-input-wrap" id="from-wrap">
+      <span class="rp-icon">🟢</span>
+      <input class="rp-input" id="from-input" type="text" placeholder="Ketik atau klik peta..." autocomplete="off" oninput="handleRpInput('from',this.value)" onfocus="showDd('from')" onblur="hideDdDelay('from')"/>
+      <button class="rp-clear" id="from-clear" onclick="clearPoint('from')">✕</button>
+      <div class="rp-dropdown" id="from-dd"></div>
+    </div>
+
+    <!-- GPS as origin -->
+    <div id="rp-gps-origin" onclick="useGpsAsOrigin()">📍 Gunakan posisi GPS saya</div>
+
+    <!-- Swap -->
+    <div id="rp-swap"><button onclick="swapPoints()">⇅ Tukar Asal &amp; Tujuan</button></div>
+
+    <!-- Tujuan -->
+    <div class="rp-label">Titik Tujuan</div>
+    <div class="rp-input-wrap" id="to-wrap">
+      <span class="rp-icon">🔴</span>
+      <input class="rp-input" id="to-input" type="text" placeholder="Ketik atau klik peta..." autocomplete="off" oninput="handleRpInput('to',this.value)" onfocus="showDd('to')" onblur="hideDdDelay('to')"/>
+      <button class="rp-clear" id="to-clear" onclick="clearPoint('to')">✕</button>
+      <div class="rp-dropdown" id="to-dd"></div>
+    </div>
+
+    <!-- Cari rute -->
+    <button id="rp-go" onclick="calcRoute()" disabled>Cari Rute</button>
+    <button id="rp-clear-route" onclick="clearRoute()">✕ Hapus Rute</button>
+
+    <!-- Result -->
+    <div id="rp-spinner">⏳ Menghitung rute...</div>
+    <div id="rp-result">
+      <div class="rr-title" id="rr-title">Rute ditemukan</div>
+      <div class="rr-row">📏 <span id="rr-dist">—</span></div>
+      <div class="rr-row">⏱ <span id="rr-time">—</span></div>
+      <div class="rr-muted" id="rr-via">via OpenStreetMap Routing</div>
+    </div>
+    <div id="rp-error"></div>
+  </div>
+</div>
+
+<!-- BASEMAP PANEL -->
+<div id="basemap-panel">
+  <div id="bm-header" onclick="toggleBmPanel()">🗺 Basemap <span id="bm-arrow">▾</span></div>
   <div id="bm-body">
     <div class="bm-item active" onclick="switchBasemap('carto-light',this)">
       <img class="bm-thumb" src="https://a.basemaps.cartocdn.com/light_all/15/25962/16378.png" onerror="this.style.background='#f1f5f9';this.removeAttribute('src')"/>
-      <div class="bm-label">Carto Light<div class="bm-sublabel">Bersih & minimal</div></div>
+      <div class="bm-label">Carto Light<div class="bm-sublabel">Bersih minimal</div></div>
       <span class="bm-check">✓</span>
     </div>
     <div class="bm-item" onclick="switchBasemap('carto-dark',this)">
@@ -194,14 +281,9 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hi
       <div class="bm-label">OSM Humanitarian<div class="bm-sublabel">Warna hangat</div></div>
       <span class="bm-check">✓</span>
     </div>
-    <div class="bm-item" onclick="switchBasemap('topo',this)">
-      <img class="bm-thumb" src="https://tile.opentopomap.org/15/25962/16378.png" onerror="this.style.background='#eef7ee';this.removeAttribute('src')"/>
-      <div class="bm-label">OpenTopoMap<div class="bm-sublabel">Topografi</div></div>
-      <span class="bm-check">✓</span>
-    </div>
     <div class="bm-item" onclick="switchBasemap('carto-voyager',this)">
       <img class="bm-thumb" src="https://a.basemaps.cartocdn.com/rastertiles/voyager/15/25962/16378.png" onerror="this.style.background='#f5f0e8';this.removeAttribute('src')"/>
-      <div class="bm-label">Carto Voyager<div class="bm-sublabel">Detail & berwarna</div></div>
+      <div class="bm-label">Carto Voyager<div class="bm-sublabel">Detail berwarna</div></div>
       <span class="bm-check">✓</span>
     </div>
     <div class="bm-item" onclick="switchBasemap('esri-street',this)">
@@ -211,16 +293,14 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hi
     </div>
     <div class="bm-item" onclick="switchBasemap('esri-imagery',this)">
       <img class="bm-thumb" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/15/16378/25962" onerror="this.style.background='#2d4a2d';this.removeAttribute('src')"/>
-      <div class="bm-label">Satelit (ESRI)<div class="bm-sublabel">Citra satelit</div></div>
+      <div class="bm-label">Satelit ESRI<div class="bm-sublabel">Citra satelit</div></div>
       <span class="bm-check">✓</span>
     </div>
   </div>
 </div>
 
 <!-- GPS -->
-<button id="gps-btn" onclick="toggleGPS()" title="Lokasi saya">
-  <span id="gps-icon">📍</span>
-</button>
+<button id="gps-btn" onclick="toggleGPS()" title="Lokasi saya">📍</button>
 <div id="gps-status"></div>
 
 <!-- LEGEND -->
@@ -233,13 +313,14 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hi
     <div class="leg-row"><div class="leg-dot" style="background:#7c3aed"></div>Olahraga</div>
     <div class="leg-row"><div class="leg-dot" style="background:#ea580c"></div>Asrama &amp; Perumahan</div>
     <div class="leg-row"><div class="leg-dot" style="background:#64748b"></div>Parkir &amp; Lainnya</div>
-    <div class="leg-row">
-      <div style="width:9px;height:9px;border-radius:50%;background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.3);flex-shrink:0"></div>
-      Posisi GPS Anda
+    <div class="leg-row" style="margin-top:5px;padding-top:5px;border-top:1px solid var(--border)">
+      <div style="width:18px;height:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4);border-radius:2px;flex-shrink:0"></div>Rute Jalan Kaki
     </div>
     <div class="leg-row">
-      <div style="width:14px;height:0;border-top:2px dashed #f97316;flex-shrink:0;margin:1px 0"></div>
-      Radius 500 m
+      <div style="width:18px;height:3px;background:linear-gradient(90deg,#f97316,#ef4444);border-radius:2px;flex-shrink:0"></div>Rute Kendaraan
+    </div>
+    <div class="leg-row">
+      <div style="width:18px;height:3px;background:linear-gradient(90deg,#16a34a,#84cc16);border-radius:2px;flex-shrink:0"></div>Rute Sepeda
     </div>
   </div>
 </div>
@@ -250,6 +331,10 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#000;overflow:hi
   <div id="ip-name"></div>
   <div id="ip-cat"></div>
   <div id="ip-coords"></div>
+  <div class="ip-use-btn">
+    <button class="ip-as-from" onclick="setAsFrom()">🟢 Jadikan Asal</button>
+    <button class="ip-as-to" onclick="setAsTo()">🔴 Jadikan Tujuan</button>
+  </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -273,7 +358,7 @@ function getCategory(name){
   return{cat:'Akademik',color:'#1e6be6',icon:'🎓'};
 }
 
-// ═══ DATA LOKASI (110 titik dari KML) ═══
+// ═══ DATA ═══
 const LOCS=[
   {name:"Graha ITS",lat:-7.276974740949804,lng:112.7915879920713},
   {name:"Global Language Center",lat:-7.276983562058292,lng:112.792811619422},
@@ -387,85 +472,44 @@ const LOCS=[
   {name:"Gedung ILBI ITS",lat:-7.276002130395498,lng:112.7958461269055},
 ].map(l=>({...l,...getCategory(l.name)}));
 
-// ═══ MAP INIT ═══
+// ═══ MAP ═══
 const map=L.map('map',{zoomControl:true,tap:true}).setView([-7.2825,112.7950],15);
 
-// Definisi semua basemap
 const BASEMAPS={
-  'carto-light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-    subdomains:'abcd',maxZoom:20
-  }),
-  'carto-dark': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-    subdomains:'abcd',maxZoom:20
-  }),
-  'osm': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom:19
-  }),
-  'osm-hot': L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://www.hotosm.org/">HOT</a>',
-    subdomains:'abc',maxZoom:19
-  }),
-  'topo': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
-    attribution:'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
-    subdomains:'abc',maxZoom:17
-  }),
-  'carto-voyager': L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-    subdomains:'abcd',maxZoom:20
-  }),
-  'esri-street': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{
-    attribution:'Tiles &copy; <a href="https://www.esri.com/">Esri</a>',
-    maxZoom:19
-  }),
-  'esri-imagery': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
-    attribution:'Tiles &copy; <a href="https://www.esri.com/">Esri</a>',
-    maxZoom:19
-  }),
+  'carto-light':L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OSM &copy; CARTO',subdomains:'abcd',maxZoom:20}),
+  'carto-dark':L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OSM &copy; CARTO',subdomains:'abcd',maxZoom:20}),
+  'osm':L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OSM contributors',maxZoom:19}),
+  'osm-hot':L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{attribution:'&copy; OSM &copy; HOT',subdomains:'abc',maxZoom:19}),
+  'carto-voyager':L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OSM &copy; CARTO',subdomains:'abcd',maxZoom:20}),
+  'esri-street':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'&copy; Esri',maxZoom:19}),
+  'esri-imagery':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'&copy; Esri',maxZoom:19}),
 };
-
 let currentBm='carto-light';
 BASEMAPS['carto-light'].addTo(map);
 
-// Warna jalan berdasarkan basemap
+// Jalan dari Overpass
+const roadsLayer=L.layerGroup().addTo(map);
+let roadsData=null;
 const ROAD_COLORS={
   'carto-light':{p:'#94a3b8',s:'#b0bec5',t:'#cfd8dc',r:'#dde3ec',sv:'#e8edf4',f:'#bfdbfe'},
   'carto-dark': {p:'#475569',s:'#374151',t:'#2d3748',r:'#243040',sv:'#1e2a38',f:'#1e3a5f'},
   'osm':        {p:'#f59e0b',s:'#fbbf24',t:'#d1d5db',r:'#e5e7eb',sv:'#f3f4f6',f:'#93c5fd'},
   'osm-hot':    {p:'#f97316',s:'#fb923c',t:'#d1d5db',r:'#e5e7eb',sv:'#f3f4f6',f:'#93c5fd'},
-  'topo':       {p:'#78716c',s:'#a8a29e',t:'#c4b5a0',r:'#d6cfc6',sv:'#e7e0d8',f:'#86efac'},
   'carto-voyager':{p:'#94a3b8',s:'#b0bec5',t:'#cfd8dc',r:'#dde3ec',sv:'#e8edf4',f:'#bfdbfe'},
   'esri-street':{p:'#9ca3af',s:'#b5bfca',t:'#cbd5de',r:'#dce3ea',sv:'#e8ecf2',f:'#bfdbfe'},
-  'esri-imagery':{p:'rgba(255,255,255,.6)',s:'rgba(255,255,255,.4)',t:'rgba(255,255,255,.3)',r:'rgba(255,255,255,.25)',sv:'rgba(255,255,255,.2)',f:'rgba(100,180,255,.4)'},
+  'esri-imagery':{p:'rgba(255,255,255,.55)',s:'rgba(255,255,255,.38)',t:'rgba(255,255,255,.28)',r:'rgba(255,255,255,.22)',sv:'rgba(255,255,255,.18)',f:'rgba(100,180,255,.4)'},
 };
-
-// Layer group untuk jalan agar bisa diupdate warna
-const roadsLayer=L.layerGroup().addTo(map);
-let roadsData=null;
-
 function renderRoads(data,bmKey){
   roadsLayer.clearLayers();
   const c=ROAD_COLORS[bmKey]||ROAD_COLORS['carto-light'];
-  const styles={
-    primary:    {color:c.p,weight:3.5,opacity:.9},
-    secondary:  {color:c.s,weight:2.8,opacity:.88},
-    tertiary:   {color:c.t,weight:2,opacity:.8},
-    residential:{color:c.r,weight:1.8,opacity:.75},
-    service:    {color:c.sv,weight:1.5,opacity:.7},
-    footway:    {color:c.f,weight:1,opacity:.5,dashArray:'4 4'},
-    path:       {color:c.f,weight:1,opacity:.4,dashArray:'3 4'},
-    cycleway:   {color:c.f,weight:1,opacity:.45,dashArray:'5 3'},
-  };
+  const S={primary:{color:c.p,weight:3.5,opacity:.9},secondary:{color:c.s,weight:2.8,opacity:.88},tertiary:{color:c.t,weight:2,opacity:.8},residential:{color:c.r,weight:1.8,opacity:.75},service:{color:c.sv,weight:1.5,opacity:.7},footway:{color:c.f,weight:1,opacity:.5,dashArray:'4 4'},path:{color:c.f,weight:1,opacity:.4,dashArray:'3 4'}};
   data.ways.forEach(w=>{
     const pts=w.nodes.map(id=>data.nodes[id]).filter(Boolean);
-    if(pts.length<2) return;
-    const s=styles[w.hw]||{color:c.r,weight:1.5,opacity:.65};
+    if(pts.length<2)return;
+    const s=S[w.hw]||{color:c.r,weight:1.5,opacity:.65};
     L.polyline(pts,s).addTo(roadsLayer);
   });
 }
-
 (async function loadRoads(){
   const bbox='-7.2960,112.7885,-7.2740,112.8025';
   const q=`[out:json][timeout:30];(way["highway"](${bbox}););out body;>;out skel qt;`;
@@ -474,70 +518,36 @@ function renderRoads(data,bmKey){
     const d=await res.json();
     const nodes={};
     d.elements.filter(e=>e.type==='node').forEach(n=>{nodes[n.id]=[n.lat,n.lon];});
-    const ways=d.elements.filter(e=>e.type==='way').map(w=>({
-      nodes:w.nodes, hw:(w.tags&&w.tags.highway)||''
-    })).filter(w=>w.hw);
+    const ways=d.elements.filter(e=>e.type==='way').map(w=>({nodes:w.nodes,hw:(w.tags&&w.tags.highway)||''})).filter(w=>w.hw);
     roadsData={nodes,ways};
     renderRoads(roadsData,currentBm);
-  }catch(e){console.warn('Overpass error:',e);}
+  }catch(e){console.warn('Overpass:',e);}
 })();
 
-// SWITCH BASEMAP
 window.switchBasemap=function(key,el){
-  if(key===currentBm) return;
-  map.removeLayer(BASEMAPS[currentBm]);
-  BASEMAPS[key].addTo(map);
-  BASEMAPS[key].bringToBack();
+  if(key===currentBm)return;
+  map.removeLayer(BASEMAPS[currentBm]);BASEMAPS[key].addTo(map);BASEMAPS[key].bringToBack();
   currentBm=key;
-  // Update jalan warna
-  if(roadsData) renderRoads(roadsData,key);
-  // Update marker warna outline saat dark
-  updateMarkerStyle(key);
-  // Update UI
-  document.querySelectorAll('.bm-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-};
-
-function updateMarkerStyle(key){
-  const dark=(key==='carto-dark'||key==='esri-imagery');
-  const satellite=(key==='esri-imagery');
-  LOCS.forEach((loc,i)=>{
-    const border=dark?'rgba(255,255,255,.85)':'#fff';
-    const shadow=satellite?'0 1px 5px rgba(0,0,0,.8)':'0 1px 4px rgba(0,0,0,.28)';
-    markers[i].setIcon(L.divIcon({
-      className:'',
-      html:`<div style="width:11px;height:11px;border-radius:50%;background:${loc.color};border:2px solid ${border};box-shadow:${shadow};"></div>`,
-      iconSize:[11,11],iconAnchor:[5.5,5.5],popupAnchor:[0,-8]
-    }));
-  });
-}
-
-// BASEMAP PANEL TOGGLE
-let bmOpen=true;
-window.toggleBmPanel=function(){
-  bmOpen=!bmOpen;
-  document.getElementById('bm-body').style.display=bmOpen?'block':'none';
-  document.getElementById('bm-arrow').textContent=bmOpen?'▾':'▸';
+  if(roadsData)renderRoads(roadsData,key);
+  document.querySelectorAll('.bm-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');
 };
 
 // ═══ MARKERS ═══
 function makeIcon(color){
-  return L.divIcon({
-    className:'',
-    html:`<div style="width:11px;height:11px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.28);"></div>`,
-    iconSize:[11,11],iconAnchor:[5.5,5.5],popupAnchor:[0,-8]
-  });
+  return L.divIcon({className:'',html:`<div style="width:11px;height:11px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.28);"></div>`,iconSize:[11,11],iconAnchor:[5.5,5.5],popupAnchor:[0,-8]});
 }
 const markers=[];
+let currentInfoLoc=null;
 LOCS.forEach((loc,i)=>{
   const m=L.marker([loc.lat,loc.lng],{icon:makeIcon(loc.color)}).addTo(map);
-  m.bindPopup(`<div class="its-popup"><strong>${loc.name}</strong><span style="display:inline-block;margin-top:2px;padding:1px 7px;border-radius:4px;background:${loc.color}1a;color:${loc.color};font-weight:600;font-size:10px;">${loc.icon} ${loc.cat}</span></div>`,{maxWidth:210,closeButton:false});
+  m.bindPopup(`<div class="its-popup"><strong>${loc.name}</strong><span style="display:inline-block;margin-top:2px;padding:1px 7px;border-radius:4px;background:${loc.color}1a;color:${loc.color};font-weight:600;font-size:10px;">${loc.icon} ${loc.cat}</span></div>`,{maxWidth:200,closeButton:false});
   m.on('click',()=>showInfo(loc));
   markers.push(m);
 });
 
-// ═══ INFO PANEL ═══
+// INFO PANEL
 function showInfo(loc){
+  currentInfoLoc=loc;
   document.getElementById('ip-name').textContent=loc.name;
   const c=document.getElementById('ip-cat');
   c.textContent=loc.icon+' '+loc.cat;
@@ -546,91 +556,249 @@ function showInfo(loc){
   document.getElementById('info-panel').style.display='block';
 }
 window.closeInfo=()=>{document.getElementById('info-panel').style.display='none';};
-map.on('click',()=>closeInfo());
+window.setAsFrom=function(){
+  if(!currentInfoLoc)return;
+  setRoutePoint('from',currentInfoLoc.name,currentInfoLoc.lat,currentInfoLoc.lng);
+  closeInfo();
+};
+window.setAsTo=function(){
+  if(!currentInfoLoc)return;
+  setRoutePoint('to',currentInfoLoc.name,currentInfoLoc.lat,currentInfoLoc.lng);
+  closeInfo();
+};
+map.on('click',e=>{
+  closeInfo();
+  // Klik peta langsung = set titik rute jika salah satu kosong
+  if(!fromLatLng){
+    setRoutePoint('from',`${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`,e.latlng.lat,e.latlng.lng);
+  } else if(!toLatLng){
+    setRoutePoint('to',`${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`,e.latlng.lat,e.latlng.lng);
+  }
+});
 
 // ═══ SEARCH ═══
-const si=document.getElementById('search-input');
-const sr=document.getElementById('search-results');
-const sc=document.getElementById('search-clear');
+const si=document.getElementById('search-input'),sr=document.getElementById('search-results'),sc=document.getElementById('search-clear');
 si.addEventListener('input',function(){
-  const q=this.value.trim().toLowerCase();
-  sc.style.display=q?'block':'none';
+  const q=this.value.trim().toLowerCase();sc.style.display=q?'block':'none';
   if(!q){sr.style.display='none';return;}
   const hits=LOCS.filter(l=>l.name.toLowerCase().includes(q)||l.cat.toLowerCase().includes(q)).slice(0,10);
-  sr.innerHTML=hits.length
-    ?hits.map(l=>{const i=LOCS.indexOf(l);return`<div class="sr-item" onclick="goTo(${i})"><div class="sr-dot" style="background:${l.color}"></div><span class="sr-name">${l.name}</span><span class="sr-cat">${l.cat}</span></div>`;}).join('')
-    :'<div class="sr-empty">Tidak ditemukan</div>';
+  sr.innerHTML=hits.length?hits.map(l=>{const i=LOCS.indexOf(l);return`<div class="sr-item" onclick="goTo(${i})"><div class="sr-dot" style="background:${l.color}"></div><span class="sr-name">${l.name}</span><span class="sr-cat">${l.cat}</span></div>`;}).join(''):'<div class="sr-empty">Tidak ditemukan</div>';
   sr.style.display='block';
 });
-window.goTo=function(i){
-  const loc=LOCS[i];
-  map.setView([loc.lat,loc.lng],18,{animate:true});
-  setTimeout(()=>markers[i].openPopup(),400);
-  showInfo(loc);sr.style.display='none';
-  si.value=loc.name;sc.style.display='block';
-};
+window.goTo=function(i){const loc=LOCS[i];map.setView([loc.lat,loc.lng],18,{animate:true});setTimeout(()=>markers[i].openPopup(),400);showInfo(loc);sr.style.display='none';si.value=loc.name;sc.style.display='block';};
 window.clearSearch=function(){si.value='';sc.style.display='none';sr.style.display='none';si.focus();};
 document.addEventListener('click',e=>{if(!e.target.closest('#search-wrap'))sr.style.display='none';});
 
+// ═══ ROUTING ═══
+let fromLatLng=null,toLatLng=null,routeMode='foot';
+let fromMarker=null,toMarker=null,routeLine=null;
+let rpOpen=true;
+
+const OSRM_PROFILES={foot:'foot',bike:'bike',car:'driving'};
+const ROUTE_COLORS={foot:{line:'#3b82f6',outline:'#1d4ed8'},bike:{line:'#16a34a',outline:'#15803d'},car:{line:'#f97316',outline:'#ea580c'}};
+const MODE_LABELS={foot:'🚶 Jalan Kaki',bike:'🚲 Sepeda',car:'🚗 Kendaraan'};
+const SPEED_KMPH={foot:5,bike:15,car:30}; // estimasi kecepatan rata-rata
+
+function makeRoutePin(color,label){
+  return L.divIcon({
+    className:'',
+    html:`<div style="position:relative;display:flex;flex-direction:column;align-items:center">
+      <div style="width:22px;height:22px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);"></div>
+      <div style="font-size:10px;font-weight:700;color:${color};margin-top:1px;white-space:nowrap;text-shadow:0 1px 2px #fff">${label}</div>
+    </div>`,
+    iconSize:[22,30],iconAnchor:[11,24],popupAnchor:[0,-24]
+  });
+}
+
+function setRoutePoint(type,name,lat,lng){
+  if(type==='from'){
+    fromLatLng={lat,lng};
+    document.getElementById('from-input').value=name;
+    document.getElementById('from-clear').style.display='block';
+    document.getElementById('from-dd').style.display='none';
+    if(fromMarker)map.removeLayer(fromMarker);
+    fromMarker=L.marker([lat,lng],{icon:makeRoutePin('#16a34a','ASAL'),zIndexOffset:500}).addTo(map);
+  } else {
+    toLatLng={lat,lng};
+    document.getElementById('to-input').value=name;
+    document.getElementById('to-clear').style.display='block';
+    document.getElementById('to-dd').style.display='none';
+    if(toMarker)map.removeLayer(toMarker);
+    toMarker=L.marker([lat,lng],{icon:makeRoutePin('#dc2626','TUJUAN'),zIndexOffset:500}).addTo(map);
+  }
+  checkRouteReady();
+}
+
+function checkRouteReady(){
+  document.getElementById('rp-go').disabled=!(fromLatLng&&toLatLng);
+}
+
+window.clearPoint=function(type){
+  if(type==='from'){
+    fromLatLng=null;document.getElementById('from-input').value='';document.getElementById('from-clear').style.display='none';
+    if(fromMarker){map.removeLayer(fromMarker);fromMarker=null;}
+  } else {
+    toLatLng=null;document.getElementById('to-input').value='';document.getElementById('to-clear').style.display='none';
+    if(toMarker){map.removeLayer(toMarker);toMarker=null;}
+  }
+  checkRouteReady();
+  document.getElementById('rp-result').style.display='none';
+  document.getElementById('rp-clear-route').style.display='none';
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+};
+
+window.swapPoints=function(){
+  const tmpLl=fromLatLng,tmpName=document.getElementById('from-input').value;
+  const toLl=toLatLng,toName=document.getElementById('to-input').value;
+  if(fromMarker){map.removeLayer(fromMarker);fromMarker=null;}
+  if(toMarker){map.removeLayer(toMarker);toMarker=null;}
+  fromLatLng=null;toLatLng=null;
+  document.getElementById('from-input').value='';document.getElementById('from-clear').style.display='none';
+  document.getElementById('to-input').value='';document.getElementById('to-clear').style.display='none';
+  if(toLl) setRoutePoint('from',toName,toLl.lat,toLl.lng);
+  if(tmpLl) setRoutePoint('to',tmpName,tmpLl.lat,tmpLl.lng);
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  document.getElementById('rp-result').style.display='none';
+  document.getElementById('rp-clear-route').style.display='none';
+};
+
+window.setMode=function(mode,el){
+  routeMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;document.getElementById('rp-result').style.display='none';document.getElementById('rp-clear-route').style.display='none';}
+};
+
+window.calcRoute=async function(){
+  if(!fromLatLng||!toLatLng)return;
+  const spinner=document.getElementById('rp-spinner');
+  const result=document.getElementById('rp-result');
+  const errDiv=document.getElementById('rp-error');
+  const goBtn=document.getElementById('rp-go');
+  spinner.style.display='block';result.style.display='none';errDiv.style.display='none';goBtn.disabled=true;
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  try{
+    const profile=OSRM_PROFILES[routeMode];
+    const url=`https://router.project-osrm.org/route/v1/${profile}/${fromLatLng.lng},${fromLatLng.lat};${toLatLng.lng},${toLatLng.lat}?overview=full&geometries=geojson&steps=false`;
+    const res=await fetch(url);
+    const data=await res.json();
+    if(data.code!=='Ok'||!data.routes||!data.routes.length){
+      throw new Error('Rute tidak ditemukan. Coba titik lain.');
+    }
+    const route=data.routes[0];
+    const coords=route.geometry.coordinates.map(c=>[c[1],c[0]]);
+    const distM=route.distance;
+    const durS=route.duration;
+    const rc=ROUTE_COLORS[routeMode];
+    // Garis outline (shadow)
+    const outline=L.polyline(coords,{color:rc.outline,weight:7,opacity:.35,lineCap:'round',lineJoin:'round'}).addTo(map);
+    // Garis utama
+    const line=L.polyline(coords,{color:rc.line,weight:4.5,opacity:.92,lineCap:'round',lineJoin:'round'}).addTo(map);
+    // Group keduanya
+    routeLine=L.layerGroup([outline,line]).addTo(map);
+    outline.remove();line.remove();// re-add in correct order
+    if(routeLine) map.removeLayer(routeLine);
+    routeLine=L.featureGroup([
+      L.polyline(coords,{color:rc.outline,weight:7,opacity:.3,lineCap:'round',lineJoin:'round'}),
+      L.polyline(coords,{color:rc.line,weight:4.5,opacity:.92,lineCap:'round',lineJoin:'round'})
+    ]).addTo(map);
+    map.fitBounds(routeLine.getBounds(),{padding:[40,40]});
+    // Hasil
+    const distTxt=distM>=1000?`${(distM/1000).toFixed(1)} km`:`${Math.round(distM)} m`;
+    const durMin=Math.ceil(durS/60);
+    const durTxt=durMin>=60?`${Math.floor(durMin/60)} jam ${durMin%60} menit`:`${durMin} menit`;
+    document.getElementById('rr-title').textContent=`${MODE_LABELS[routeMode]}`;
+    document.getElementById('rr-dist').textContent=distTxt;
+    document.getElementById('rr-time').textContent=durTxt;
+    document.getElementById('rr-via').textContent='via OSRM (OpenStreetMap Routing)';
+    result.style.display='block';
+    document.getElementById('rp-clear-route').style.display='block';
+  }catch(e){
+    errDiv.textContent='⚠️ '+e.message;errDiv.style.display='block';
+  }finally{
+    spinner.style.display='none';goBtn.disabled=false;
+  }
+};
+
+window.clearRoute=function(){
+  if(routeLine){map.removeLayer(routeLine);routeLine=null;}
+  if(fromMarker){map.removeLayer(fromMarker);fromMarker=null;}
+  if(toMarker){map.removeLayer(toMarker);toMarker=null;}
+  fromLatLng=null;toLatLng=null;
+  ['from-input','to-input'].forEach(id=>document.getElementById(id).value='');
+  ['from-clear','to-clear'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('rp-result').style.display='none';
+  document.getElementById('rp-error').style.display='none';
+  document.getElementById('rp-clear-route').style.display='none';
+  document.getElementById('rp-go').disabled=true;
+};
+
+// Dropdown search untuk routing input
+function handleRpInput(type,val){
+  const dd=document.getElementById(type+'-dd');
+  const q=val.trim().toLowerCase();
+  if(!q){dd.style.display='none';return;}
+  const hits=LOCS.filter(l=>l.name.toLowerCase().includes(q)||l.cat.toLowerCase().includes(q)).slice(0,8);
+  if(!hits.length){dd.style.display='none';return;}
+  dd.innerHTML=hits.map(l=>`<div class="rp-dd-item" onmousedown="selectRpLoc('${type}','${l.name.replace(/'/g,"\\'")}',${l.lat},${l.lng})"><div class="rp-dd-dot" style="background:${l.color}"></div>${l.name}</div>`).join('');
+  dd.style.display='block';
+}
+window.selectRpLoc=function(type,name,lat,lng){setRoutePoint(type,name,lat,lng);};
+window.showDd=function(type){const v=document.getElementById(type+'-input').value;if(v.trim())handleRpInput(type,v);};
+window.hideDdDelay=function(type){setTimeout(()=>document.getElementById(type+'-dd').style.display='none',200);};
+
+// GPS as origin
+window.useGpsAsOrigin=function(){
+  if(!navigator.geolocation){alert('GPS tidak tersedia');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    setRoutePoint('from',`GPS (${pos.coords.latitude.toFixed(4)},${pos.coords.longitude.toFixed(4)})`,pos.coords.latitude,pos.coords.longitude);
+    if(!gpsActive)startGPS();
+  },()=>alert('Gagal mendapatkan posisi GPS'));
+};
+
+// Panel toggle
+window.toggleRpPanel=function(){
+  rpOpen=!rpOpen;
+  document.getElementById('rp-body').style.display=rpOpen?'block':'none';
+  document.getElementById('rp-arrow').textContent=rpOpen?'▾':'▸';
+};
+let bmOpen=true;
+window.toggleBmPanel=function(){bmOpen=!bmOpen;document.getElementById('bm-body').style.display=bmOpen?'block':'none';document.getElementById('bm-arrow').textContent=bmOpen?'▾':'▸';};
+
 // ═══ GPS ═══
 let gpsActive=false,gpsMarker=null,gpsCircle=null,gpsRadius=null,watchId=null;
-const gpsBtn=document.getElementById('gps-btn');
-const gpsSt=document.getElementById('gps-status');
+const gpsBtn=document.getElementById('gps-btn'),gpsSt=document.getElementById('gps-status');
 function showStatus(msg,t=3000){gpsSt.textContent=msg;gpsSt.style.display='block';if(t)setTimeout(()=>gpsSt.style.display='none',t);}
 window.toggleGPS=function(){gpsActive?stopGPS():startGPS();};
 function startGPS(){
   if(!navigator.geolocation){showStatus('⚠️ GPS tidak didukung',4000);return;}
-  showStatus('📡 Mencari sinyal GPS...',0);
-  gpsBtn.classList.add('active');gpsActive=true;
+  showStatus('📡 Mencari GPS...',0);gpsBtn.classList.add('active');gpsActive=true;
   watchId=navigator.geolocation.watchPosition(pos=>{
-    const{latitude:lat,longitude:lng,accuracy:acc}=pos.coords;
-    gpsSt.style.display='none';
-    const gIcon=L.divIcon({className:'',
-      html:`<div style="position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">
-        <div class="gps-ring" style="position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(59,130,246,.18);border:2px solid rgba(59,130,246,.45);"></div>
-        <div style="width:10px;height:10px;border-radius:50%;background:#3b82f6;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(59,130,246,.7);z-index:1;"></div>
-      </div>`,
-      iconSize:[22,22],iconAnchor:[11,11]
-    });
-    if(gpsMarker){
-      gpsMarker.setLatLng([lat,lng]);
-      gpsCircle.setLatLng([lat,lng]).setRadius(acc);
-      gpsRadius.setLatLng([lat,lng]);
-    }else{
-      gpsMarker=L.marker([lat,lng],{icon:gIcon,zIndexOffset:2000}).addTo(map)
-        .bindPopup(`<div class="its-popup"><strong>📍 Posisi Anda</strong><span>Akurasi ±${Math.round(acc)} m</span></div>`);
+    const{latitude:lat,longitude:lng,accuracy:acc}=pos.coords;gpsSt.style.display='none';
+    const gi=L.divIcon({className:'',html:`<div style="position:relative;width:22px;height:22px;display:flex;align-items:center;justify-content:center;"><div class="gps-ring" style="position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(59,130,246,.18);border:2px solid rgba(59,130,246,.45);"></div><div style="width:10px;height:10px;border-radius:50%;background:#3b82f6;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(59,130,246,.7);z-index:1;"></div></div>`,iconSize:[22,22],iconAnchor:[11,11]});
+    if(gpsMarker){gpsMarker.setLatLng([lat,lng]);gpsCircle.setLatLng([lat,lng]).setRadius(acc);gpsRadius.setLatLng([lat,lng]);}
+    else{
+      gpsMarker=L.marker([lat,lng],{icon:gi,zIndexOffset:2000}).addTo(map);
       gpsCircle=L.circle([lat,lng],{radius:acc,color:'#3b82f6',fillColor:'#3b82f6',fillOpacity:.08,weight:1.5,opacity:.4}).addTo(map);
       gpsRadius=L.circle([lat,lng],{radius:500,color:'#f97316',fillColor:'#f97316',fillOpacity:.05,weight:2,opacity:.75,dashArray:'8 5'}).addTo(map);
-      gpsRadius.bindPopup('<div class="its-popup"><strong>⭕ Radius 500 m</strong><span>dari posisi Anda</span></div>');
       map.setView([lat,lng],17,{animate:true});
     }
-  },err=>{
-    const m={1:'⛔ Izin GPS ditolak.',2:'📡 Sinyal tidak tersedia.',3:'⏱ GPS timeout.'}[err.code]||'❌ GPS error.';
-    showStatus(m,5000);stopGPS();
-  },{enableHighAccuracy:true,maximumAge:5000,timeout:15000});
+  },err=>{showStatus({1:'⛔ Izin GPS ditolak.',2:'📡 Sinyal tidak tersedia.',3:'⏱ GPS timeout.'}[err.code]||'❌ GPS error.',5000);stopGPS();},{enableHighAccuracy:true,maximumAge:5000,timeout:15000});
 }
 function stopGPS(){
   if(watchId)navigator.geolocation.clearWatch(watchId);
   [gpsMarker,gpsCircle,gpsRadius].forEach(l=>{if(l)map.removeLayer(l);});
-  gpsMarker=gpsCircle=gpsRadius=null;
-  gpsBtn.classList.remove('active');gpsActive=false;gpsSt.style.display='none';
+  gpsMarker=gpsCircle=gpsRadius=null;gpsBtn.classList.remove('active');gpsActive=false;gpsSt.style.display='none';
 }
 
-// ═══ LEGEND TOGGLE ═══
+// ═══ LEGEND ═══
 let legOpen=true;
-window.toggleLegend=function(){
-  legOpen=!legOpen;
-  document.getElementById('leg-body').style.display=legOpen?'block':'none';
-  document.getElementById('leg-arrow').textContent=legOpen?'▾':'▸';
-};
-// Mobile: panel basemap & legend tutup by default
+window.toggleLegend=function(){legOpen=!legOpen;document.getElementById('leg-body').style.display=legOpen?'block':'none';document.getElementById('leg-arrow').textContent=legOpen?'▾':'▸';};
+
+// Mobile defaults
 if(window.innerWidth<600){
-  bmOpen=false;
-  document.getElementById('bm-body').style.display='none';
-  document.getElementById('bm-arrow').textContent='▸';
-  legOpen=false;
-  document.getElementById('leg-body').style.display='none';
-  document.getElementById('leg-arrow').textContent='▸';
+  bmOpen=false;document.getElementById('bm-body').style.display='none';document.getElementById('bm-arrow').textContent='▸';
+  legOpen=false;document.getElementById('leg-body').style.display='none';document.getElementById('leg-arrow').textContent='▸';
 }
 </script>
 </body>
