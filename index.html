@@ -313,6 +313,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;overflow:hidden}
     <div class="leg-row"><div class="leg-dot" style="background:#7c3aed"></div>Olahraga</div>
     <div class="leg-row"><div class="leg-dot" style="background:#ea580c"></div>Asrama &amp; Perumahan</div>
     <div class="leg-row"><div class="leg-dot" style="background:#64748b"></div>Parkir &amp; Lainnya</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#7c3aed"></div>Kampus Cabang</div>
     <div class="leg-row" style="margin-top:5px;padding-top:5px;border-top:1px solid var(--border)">
       <div style="width:18px;height:3px;background:linear-gradient(90deg,#3b82f6,#06b6d4);border-radius:2px;flex-shrink:0"></div>Rute Jalan Kaki
     </div>
@@ -342,6 +343,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;overflow:hidden}
 // ═══ KATEGORI ═══
 function getCategory(name){
   const n=name.toLowerCase();
+  if(/manyar/.test(n))            return{cat:'Kampus Cabang',color:'#7c3aed',icon:'🏫'};
   if(/gerbang|pos \d/.test(n))   return{cat:'Gerbang',color:'#dc2626',icon:'🚪'};
   if(/rektorat/.test(n))          return{cat:'Rektorat',color:'#dc2626',icon:'🏛'};
   if(/masjid/.test(n))            return{cat:'Ibadah',color:'#16a34a',icon:'🕌'};
@@ -470,10 +472,11 @@ const LOCS=[
   {name:"Creative Desain Center",lat:-7.276747679329421,lng:112.798891653533},
   {name:"Fakultas Kedokteran dan Kesehatan (Utara)",lat:-7.275623215646355,lng:112.7958187061861},
   {name:"Gedung ILBI ITS",lat:-7.276002130395498,lng:112.7958461269055},
+  {name:"Kampus ITS Manyar",lat:-7.28675,lng:112.76351},
 ].map(l=>({...l,...getCategory(l.name)}));
 
 // ═══ MAP ═══
-const map=L.map('map',{zoomControl:true,tap:true}).setView([-7.2825,112.7950],15);
+const map=L.map('map',{zoomControl:true,tap:true}).setView([-7.2835,112.7800],14);
 
 const BASEMAPS={
   'carto-light':L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OSM &copy; CARTO',subdomains:'abcd',maxZoom:20}),
@@ -511,7 +514,7 @@ function renderRoads(data,bmKey){
   });
 }
 (async function loadRoads(){
-  const bbox='-7.2960,112.7885,-7.2740,112.8025';
+  const bbox='-7.2960,112.7580,-7.2700,112.8025';
   const q=`[out:json][timeout:30];(way["highway"](${bbox}););out body;>;out skel qt;`;
   try{
     const res=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
